@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fanta Volley Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Fanta Volley Dashboard</h1>
+
+    <h2>Squads</h2>
+    <table>
+        <tr>
+            <th>Squad Name</th>
+            <th>Total Points</th>
+        </tr>
+        {% for squad in squads %}
+        <tr>
+            <td>{{ squad.name }}</td>
+            <td>{{ squad.total_points }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Students</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Squad</th>
+            <th>Total Points</th>
+            <th>Last Game Played</th>
+        </tr>
+        {% for student in students %}
+        <tr>
+            <td>{{ student.name }}</td>
+            <td>{{ student.squad.name }}</td>
+            <td>{{ student.total_points }}</td>
+            <td>{{ 'Yes' if student.played else 'No' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="{{ url_for('add_game') }}">Add Game Results</a>
+</body>
+</html>
