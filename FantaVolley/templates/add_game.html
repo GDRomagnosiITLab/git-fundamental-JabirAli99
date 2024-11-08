@@ -3,34 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Game</title>
+    <title>Add Game - Fanta Volley</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-
 </head>
-<body class="add-game-page">
-    <h1>Add Game Results</h1>
+<body>
+    <h1>Add a New Game</h1>
+    
+    <!-- Game Form -->
+    <form action="{{ url_for('add_game') }}" method="POST">
+        <label for="date">Game Date:</label>
+        <input type="date" name="date" required><br><br>
 
-    <form method="POST">
-        <label for="student">Student:</label>
-        <select name="student_id" id="student">
+        <label for="squad">Select Squad:</label>
+        <select name="squad" required>
+            <option value="1">Squadra Gumiero</option>
+            <option value="2">Squadra Salvo</option>
+        </select><br><br>
+
+        <label for="student_id">Select Student:</label>
+        <select name="student_id" required>
             {% for student in students %}
-            <option value="{{ student.id }}">{{ student.name }}</option>
+                <option value="{{ student.id }}">{{ student.name }}</option>
             {% endfor %}
-        </select>
+        </select><br><br>
 
         <label for="points">Points:</label>
-        <input type="number" name="points" id="points" required>
+        <input type="number" name="points" min="0" required><br><br>
 
-        <label for="played">Did they play?</label>
-        <select name="played" id="played">
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
+        <label>Did the student play?</label>
+        <input type="radio" name="played" value="yes" required> Yes
+        <input type="radio" name="played" value="no" required> No<br><br>
 
-        <button type="submit">Submit</button>
+        <button type="submit">Add Game</button>
     </form>
 
-    <a href="{{ url_for('dashboard') }}">Torna alla Dashboard</a>
+    <h2>Squads and Points</h2>
+    <table>
+        <tr>
+            <th>Squad</th>
+            <th>Total Points</th>
+        </tr>
+        {% for squad in squads %}
+        <tr>
+            <td>{{ squad.name }}</td>
+            <td>{{ squad.total_points }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
+    <form action="{{ url_for('update_points') }}" method="POST">
+        <button type="submit">Update Points</button>
+    </form>
 </body>
 </html>
