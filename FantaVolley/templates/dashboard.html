@@ -1,46 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="it">
+<head>-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fanta Volley Dashboard</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
 </head>
 <body>
-    <h1>Fanta Volley Dashboard</h1>
+    <header>
+        <h1>🏐 Fanta Volley Dashboard</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="{{ url_for('add_game') }}">Aggiungi Risultato</a>
+        </nav>
+    </header>
 
-    <h2>Squads</h2>
-    <table>
-        <tr>
-            <th>Squad Name</th>
-            <th>Total Points</th>
-        </tr>
-        {% for squad in squads %}
-        <tr>
-            <td>{{ squad.name }}</td>
-            <td>{{ squad.total_points }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <main>
+        <section class="squad-section">
+            <h2>Squadre e Punti Totali</h2>
+            <div class="squad-cards">
+                {% for squad in squads %}
+                <div class="squad-card">
+                    <h3>{{ squad.name }}</h3>
+                    <p>Punti Totali: <span>{{ squad.total_points }}</span></p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
 
-    <h2>Students</h2>
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Squad</th>
-            <th>Total Points</th>
-            <th>Last Game Played</th>
-        </tr>
-        {% for student in students %}
-        <tr>
-            <td>{{ student.name }}</td>
-            <td>{{ student.squad.name }}</td>
-            <td>{{ student.total_points }}</td>
-            <td>{{ 'Yes' if student.played else 'No' }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <section class="players-section">
+            <h2>Lista Studenti</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Squadra</th>
+                        <th>Ultimo Gioco</th>
+                        <th>Punti Gioco</th>
+                        <th>Punti Totali</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.squad.name }}</td>
+                        <td>{{ "Sì" if student.played else "No" }}</td>
+                        <td>{{ student.points_per_game }}</td>
+                        <td>{{ student.total_points }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
 
-    <a href="{{ url_for('add_game') }}">Add Game Results</a>
+    <footer>
+        <p>Creato per il torneo di Fanta Volley</p>
+    </footer>
 </body>
 </html>

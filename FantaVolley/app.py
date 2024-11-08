@@ -35,7 +35,7 @@ def dashboard():
     students = Student.query.all()
     return render_template('dashboard.html', squads=squads, students=students)
 
-# Route to add game results
+
 @app.route('/add_game', methods=['GET', 'POST'])
 def add_game():
     if request.method == 'POST':
@@ -62,6 +62,7 @@ def add_game():
 
     students = Student.query.all()
     return render_template('add_game.html', students=students)
+
 
 # Initialize the database
 @app.before_first_request

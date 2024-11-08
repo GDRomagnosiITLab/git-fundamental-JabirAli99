@@ -1,37 +1,181 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+/* Reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-h1, h2 {
+/* Stile di base */
+body {
+    font-family: Arial, sans-serif;
     color: #333;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Stili header */
+header {
+    background-color: #00796b;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+header nav a {
+    color: #e0f2f1;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+header nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    padding: 20px;
+    flex: 1;
+}
+
+/* Stile per la dashboard */
+.squad-section,
+.players-section {
+    margin-bottom: 30px;
+}
+
+.squad-section h2,
+.players-section h2 {
+    font-size: 1.5em;
+    color: #00796b;
+    margin-bottom: 15px;
+}
+
+.squad-cards {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.squad-card {
+    background-color: #00796b;
+    color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 200px;
+    text-align: center;
+}
+
+.squad-card h3 {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+}
+
+.squad-card p {
+    font-size: 1em;
+}
+
+.squad-card span {
+    font-weight: bold;
+    font-size: 1.1em;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin-top: 10px;
 }
 
-table, th, td {
+table th, table td {
     border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
 }
 
-th, td {
-    padding: 8px;
-    text-align: left;
-}
-
-a {
-    display: inline-block;
-    padding: 10px 15px;
-    background-color: #007BFF;
+table th {
+    background-color: #00796b;
     color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-top: 20px;
+    font-weight: bold;
 }
 
-a:hover {
-    background-color: #0056b3;
+table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+footer {
+    background-color: #00796b;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.9em;
+}
+
+/* Stili specifici per la pagina Add Game */
+.add-game-page h1 {
+    text-align: center;
+    font-size: 2rem;
+    color: #00796b;
+    margin-bottom: 1.5rem;
+}
+
+.add-game-page form {
+    background-color: #ffffff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.add-game-page label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.add-game-page input[type="number"],
+.add-game-page select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.add-game-page button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #00796b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-game-page button[type="submit"]:hover {
+    background-color: #005b56;
+}
+
+.add-game-page a {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #00796b;
+    text-decoration: none;
+}
+
+.add-game-page a:hover {
+    text-decoration: underline;
 }

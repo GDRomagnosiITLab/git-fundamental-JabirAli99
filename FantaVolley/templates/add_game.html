@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Game</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
 </head>
-<body>
+<body class="add-game-page">
     <h1>Add Game Results</h1>
 
     <form method="POST">
@@ -29,6 +30,7 @@
         <button type="submit">Submit</button>
     </form>
 
-    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    <a href="{{ url_for('dashboard') }}">Torna alla Dashboard</a>
+
 </body>
 </html>
