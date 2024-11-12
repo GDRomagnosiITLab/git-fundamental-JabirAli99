@@ -20,19 +20,15 @@
             <option value="2">Squadra Salvo</option>
         </select><br><br>
 
-        <label for="student_id">Select Student:</label>
-        <select name="student_id" required>
-            {% for student in students %}
-                <option value="{{ student.id }}">{{ student.name }}</option>
-            {% endfor %}
-        </select><br><br>
-
-        <label for="points">Points:</label>
+        <label for="points">Total Points for Squad:</label>
         <input type="number" name="points" min="0" required><br><br>
 
-        <label>Did the student play?</label>
-        <input type="radio" name="played" value="yes" required> Yes
-        <input type="radio" name="played" value="no" required> No<br><br>
+        <h3>Did the Students Play?</h3>
+        {% for student in students %}
+            <label>{{ student.name }}</label>
+            <input type="radio" name="played_{{ student.id }}" value="yes" required> Yes
+            <input type="radio" name="played_{{ student.id }}" value="no" required> No<br>
+        {% endfor %}
 
         <button type="submit">Add Game</button>
     </form>
@@ -50,9 +46,5 @@
         </tr>
         {% endfor %}
     </table>
-
-    <form action="{{ url_for('update_points') }}" method="POST">
-        <button type="submit">Update Points</button>
-    </form>
 </body>
 </html>

@@ -18,13 +18,15 @@ class Student(db.Model):
     name = db.Column(db.String(100), nullable=False)
     squad_id = db.Column(db.Integer, db.ForeignKey('squad.id'), nullable=False)
     played = db.Column(db.Boolean, default=False)
-    points_per_game = db.Column(db.Integer, default=0)
     total_points = db.Column(db.Integer, default=0)
+
+    # Define relationship to access related Squad directly
+    squad = db.relationship('Squad', backref='students')
 
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(50))
-    student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
+    squad_id = db.Column(db.Integer, db.ForeignKey('squad.id'))
     points = db.Column(db.Integer, default=0)
     played = db.Column(db.Boolean, default=False)
 
@@ -72,32 +74,40 @@ def dashboard():
 @app.route('/add_game', methods=['GET', 'POST'])
 def add_game():
     if request.method == 'POST':
-        # Prendi i dati dal form
+        # Get the game data
         date = request.form['date']
         squad_id = request.form['squad']
-        student_id = request.form['student_id']
         points = int(request.form['points'])
-        played = request.form['played'] == 'yes'
-
-        # Recupera lo studente e aggiorna i dettagli della partita
-        student = Student.query.get(student_id)
-        student.played = played
-        student.points_per_game = points if played else 0
-        student.total_points += points if played else -7
-
-        # Aggiorna i punti totali della squadra
+        played_students_count = 0
+        not_played_students_count = 0
+        
+        # Count the number of players who didn't play
+        for student in Student.query.filter_by(squad_id=squad_id).all():
+            played = request.form.get(f'played_{student.id}') == 'yes'
+            if played:
+                played_students_count += 1
+            else:
+                not_played_students_count += 1
+                student.total_points -= 7  # Apply penalty of -7 for players who didn't play
+            student.played = played  # Update played status
+        
+        # Subtract the penalty for not played players
         squad = Squad.query.get(squad_id)
-        squad.total_points = sum([s.total_points for s in Student.query.filter_by(squad_id=squad.id)])
+        squad.total_points = points - (not_played_students_count * 7)  # Total points minus penalty
 
-        # Aggiungi la partita alla tabella delle partite
-        new_game = Game(student_id=student_id, points=points, played=played, date=date)
+        # Add the game to the Game table
+        new_game = Game(squad_id=squad_id, points=points, date=date)
         db.session.add(new_game)
+        db.session.commit()
+
+        # Update the total points for the squad
+        squad.total_points = sum(student.total_points for student in Student.query.filter_by(squad_id=squad_id))
         db.session.commit()
 
         return redirect(url_for('dashboard'))
 
     squads = Squad.query.all()
-    students = Student.query.all()  # Passa gli studenti alla vista
+    students = Student.query.all()
     return render_template('add_game.html', squads=squads, students=students)
 
 if __name__ == '__main__':
