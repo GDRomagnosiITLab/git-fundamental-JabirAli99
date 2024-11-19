@@ -7,44 +7,71 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Add a New Game</h1>
-    
-    <!-- Game Form -->
-    <form action="{{ url_for('add_game') }}" method="POST">
-        <label for="date">Game Date:</label>
-        <input type="date" name="date" required><br><br>
+    <!-- Header Section -->
+    <header>
+        <h1>Add a New Game</h1>
+        <nav>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        </nav>
+    </header>
 
-        <label for="squad">Select Squad:</label>
-        <select name="squad" required>
-            <option value="1">Squadra Gumiero</option>
-            <option value="2">Squadra Salvo</option>
-        </select><br><br>
+    <main>
+        <!-- Game Form -->
+        <section class="form-section">
+            <h2>Game Details</h2>
+            <form action="{{ url_for('add_game') }}" method="POST" class="form-container">
+                <label for="date">Game Date:</label>
+                <input type="date" name="date" required><br>
 
-        <label for="points">Total Points for Squad:</label>
-        <input type="number" name="points" min="0" required><br><br>
+                <label for="squad">Select Squad:</label>
+                <select name="squad" required>
+                    <option value="1">Squadra Gumiero</option>
+                    <option value="2">Squadra Salvo</option>
+                </select><br>
 
-        <h3>Did the Students Play?</h3>
-        {% for student in students %}
-            <label>{{ student.name }}</label>
-            <input type="radio" name="played_{{ student.id }}" value="yes" required> Yes
-            <input type="radio" name="played_{{ student.id }}" value="no" required> No<br>
-        {% endfor %}
+                <label for="points">Total Points for Squad:</label>
+                <input type="number" name="points" min="0" required><br>
 
-        <button type="submit">Add Game</button>
-    </form>
+                <h3>Player Participation</h3>
+                <div class="player-list">
+                    {% for student in students %}
+                        <div class="player-entry">
+                            <label>{{ student.name }}</label>
+                            <input type="radio" name="played_{{ student.id }}" value="yes" required> Yes
+                            <input type="radio" name="played_{{ student.id }}" value="no" required> No
+                        </div>
+                    {% endfor %}
+                </div>
 
-    <h2>Squads and Points</h2>
-    <table>
-        <tr>
-            <th>Squad</th>
-            <th>Total Points</th>
-        </tr>
-        {% for squad in squads %}
-        <tr>
-            <td>{{ squad.name }}</td>
-            <td>{{ squad.total_points }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+                <button type="submit">Submit Game</button>
+            </form>
+        </section>
+
+        <!-- Squads Table -->
+        <section class="squad-section">
+            <h2>Squads and Points</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Squad</th>
+                        <th>Total Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for squad in squads %}
+                    <tr>
+                        <td>{{ squad.name }}</td>
+                        <td>{{ squad.total_points }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2024 Fanta Volley. All rights reserved.</p>
+    </footer>
 </body>
 </html>

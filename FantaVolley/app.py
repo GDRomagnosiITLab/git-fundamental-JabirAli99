@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///fanta.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)  # Initialize Flask-Migrate
 
 # Models for Students, Squads, and Games
 class Squad(db.Model):
@@ -32,7 +34,7 @@ class Game(db.Model):
 
 # Initialize the database and add students
 @app.before_first_request
-def create_tables():
+def initialize_data():
     db.create_all()
 
     # Create Squads
@@ -52,7 +54,6 @@ def create_tables():
         "Sara Zorzan"
     ]
     
-    # Assign students to squads, assuming squad 1 for first half and squad 2 for the second half
     squad1 = Squad.query.filter_by(name="Squadra Gumiero").first()
     squad2 = Squad.query.filter_by(name="Squadra Salvo").first()
 
@@ -74,26 +75,22 @@ def dashboard():
 @app.route('/add_game', methods=['GET', 'POST'])
 def add_game():
     if request.method == 'POST':
-        # Get the game data
         date = request.form['date']
         squad_id = request.form['squad']
         points = int(request.form['points'])
-        played_students_count = 0
         not_played_students_count = 0
         
         # Count the number of players who didn't play
         for student in Student.query.filter_by(squad_id=squad_id).all():
             played = request.form.get(f'played_{student.id}') == 'yes'
-            if played:
-                played_students_count += 1
-            else:
+            if not played:
                 not_played_students_count += 1
                 student.total_points -= 7  # Apply penalty of -7 for players who didn't play
             student.played = played  # Update played status
         
-        # Subtract the penalty for not played players
+        # Update squad points
         squad = Squad.query.get(squad_id)
-        squad.total_points = points - (not_played_students_count * 7)  # Total points minus penalty
+        squad.total_points = points - (not_played_students_count * 7)
 
         # Add the game to the Game table
         new_game = Game(squad_id=squad_id, points=points, date=date)
