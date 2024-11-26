@@ -1,88 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Dashboard - Fanta Volley</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <header>
-        <h1>Fanta Volleyball Dashboard</h1>
+        <h1>Dashboard Fanta Volley</h1>
         <nav>
-            <a href="{{ url_for('dashboard') }}">Home</a>
-            <a href="{{ url_for('add_game') }}">Aggiungi Risultato</a>
+            <a href="{{ url_for('add_game') }}">Aggiungi Partita</a>
         </nav>
     </header>
 
-    <main class="container mt-5">
-        <!-- Squad Points Information -->
-        <div class="d-flex justify-content-around mt-4">
-            <div class="squad-info">
-                <h2>Squadra Gumiero</h2>
-                <p>Punti Totali: 
-                    {{ squads[0].total_points if squads[0].name == "Squadra Gumiero" else squads[1].total_points }}
-                </p>
-            </div>
-            <div class="squad-info">
-                <h2>Squadra Salvo</h2>
-                <p>Punti Totali: 
-                    {{ squads[1].total_points if squads[1].name == "Squadra Salvo" else squads[0].total_points }}
-                </p>
-            </div>
-        </div>
+    <main>
+        <!-- Sezione Squadre e Punti -->
+        <section class="squad-section">
+            <h2>Squadre e Punti</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Squadra</th>
+                        <th>Punti Totali</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for squad in squads %}
+                    <tr>
+                        <td>{{ squad.name }}</td>
+                        <td>{{ squad.total_points }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
 
-        <!-- Student Lists by Squad -->
-        <h3 class="text-center mt-5 players-section">Lista Studenti</h3>
-        
-        <div class="row mt-4">
-            <!-- Squadra Gumiero Table -->
-            <div class="col-md-6">
-                <h2 class="text-center squad-section"></h2>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Squadra Gumiero</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for student in students %}
-                            {% if student.squad.name == "Squadra Gumiero" %}
-                                <tr>
-                                    <td>{{ student.name }}</td>
-                                </tr>
-                            {% endif %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Squadra Salvo Table -->
-            <div class="col-md-6">
-                <h2 class="text-center squad-section"></h2>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Squadra Salvo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for student in students %}
-                            {% if student.squad.name == "Squadra Salvo" %}
-                                <tr>
-                                    <td>{{ student.name }}</td>
-                                </tr>
-                            {% endif %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <!-- Sezione Storico Partite -->
+        <section class="game-history">
+            <h2>Storico Partite</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Squadra</th>
+                        <th>Punti</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for game in games %}
+                    <tr>
+                        <td>{{ game.date }}</td>
+                        <td>{{ game.squad.name }}</td>
+                        <td>{{ game.points }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
     </main>
 
     <footer>
-        <p>&copy; 2024 Fanta Volleyball</p>
+        <p>&copy; 2024 Fanta Volley. Tutti i diritti riservati.</p>
     </footer>
 </body>
 </html>

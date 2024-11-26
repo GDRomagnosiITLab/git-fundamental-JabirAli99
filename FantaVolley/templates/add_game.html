@@ -1,60 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Game - Fanta Volley</title>
+    <title>Aggiungi Partita - Fanta Volley</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <!-- Header Section -->
+    <!-- Sezione Intestazione -->
     <header>
-        <h1>Add a New Game</h1>
+        <h1>Aggiungi una Nuova Partita</h1>
         <nav>
             <a href="{{ url_for('dashboard') }}">Dashboard</a>
         </nav>
     </header>
 
     <main>
-        <!-- Game Form -->
+        <!-- Modulo Partita -->
         <section class="form-section">
-            <h2>Game Details</h2>
+            <h2>Dettagli della Partita</h2>
             <form action="{{ url_for('add_game') }}" method="POST" class="form-container">
-                <label for="date">Game Date:</label>
+                <label for="date">Data della Partita:</label>
                 <input type="date" name="date" required><br>
 
-                <label for="squad">Select Squad:</label>
-                <select name="squad" required>
-                    <option value="1">Squadra Gumiero</option>
-                    <option value="2">Squadra Salvo</option>
-                </select><br>
-
-                <label for="points">Total Points for Squad:</label>
-                <input type="number" name="points" min="0" required><br>
-
-                <h3>Player Participation</h3>
-                <div class="player-list">
-                    {% for student in students %}
-                        <div class="player-entry">
-                            <label>{{ student.name }}</label>
-                            <input type="radio" name="played_{{ student.id }}" value="yes" required> Yes
-                            <input type="radio" name="played_{{ student.id }}" value="no" required> No
-                        </div>
-                    {% endfor %}
+                <h3>Punti e Partecipazione delle Squadre</h3>
+                
+                <!-- Sezione Squadra Gumiero -->
+                <div class="squad-section">
+                    <h4>Squadra Gumiero</h4>
+                    <label for="gumiero_points">Punti Totali per Squadra Gumiero:</label>
+                    <input type="number" name="gumiero_points" min="0" required><br>
+                    <label for="gumiero_not_played">Numero di giocatori che non hanno giocato:</label>
+                    <input type="number" name="gumiero_not_played" min="0" max="7" required><br>
                 </div>
 
-                <button type="submit">Submit Game</button>
+                <!-- Sezione Squadra Salvo -->
+                <div class="squad-section">
+                    <h4>Squadra Salvo</h4>
+                    <label for="salvo_points">Punti Totali per Squadra Salvo:</label>
+                    <input type="number" name="salvo_points" min="0" required><br>
+                    <label for="salvo_not_played">Numero di giocatori che non hanno giocato:</label>
+                    <input type="number" name="salvo_not_played" min="0" max="7" required><br>
+                </div>
+
+                <button type="submit">Invia Partita</button>
             </form>
         </section>
 
-        <!-- Squads Table -->
+        <!-- Tabella Squadre -->
         <section class="squad-section">
-            <h2>Squads and Points</h2>
+            <h2>Squadre e Punti</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Squad</th>
-                        <th>Total Points</th>
+                        <th>Squadra</th>
+                        <th>Punti Totali</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,9 +69,9 @@
         </section>
     </main>
 
-    <!-- Footer Section -->
+    <!-- Sezione Footer -->
     <footer>
-        <p>&copy; 2024 Fanta Volley. All rights reserved.</p>
+        <p>&copy; 2024 Fanta Volley. Tutti i diritti riservati.</p>
     </footer>
 </body>
 </html>

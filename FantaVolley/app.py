@@ -32,6 +32,9 @@ class Game(db.Model):
     points = db.Column(db.Integer, default=0)
     played = db.Column(db.Boolean, default=False)
 
+    # Relationship to access related Squad directly
+    squad = db.relationship('Squad', backref='games')
+
 # Initialize the database and add students
 @app.before_first_request
 def initialize_data():
@@ -46,59 +49,71 @@ def initialize_data():
         db.session.commit()
 
     # Create Students
-    students = [
-        "Manuel Barindelli", "Matteo Bodlli", "Laura Bramani", "Michele Fontana", 
-        "Andrea Ghisolfi", "Alessandro Gumiero", "Jabir Ali", "Daniele Locatelli", 
-        "Martina Mascheroni", "Nicolo Narciso", "David Palazzo", "Lorenzo Ricali", 
-        "Andrea Umer Rigamonti", "Gabriele Salvo", "Matteo Tonet", "Yassin Yachou", 
-        "Sara Zorzan"
-    ]
-    
     squad1 = Squad.query.filter_by(name="Squadra Gumiero").first()
     squad2 = Squad.query.filter_by(name="Squadra Salvo").first()
 
+    students_squad1 = [
+        "Alessandro Gumiero", "Matteo Bodlli", "Jabir Ali", 
+        "Daniele Locatelli", "Lorenzo Ricali", 
+        "Andrea Umer Rigamonti", "Martina Mascheroni"
+    ]
+    students_squad2 = [
+        "Manuel Barindelli", "Laura Bramani", "Andrea Ghisolfi", 
+        "Nicolo Narciso", "David Palazzo", "Gabriele Salvo", 
+        "Matteo Tonet", "Yassin Yachou", "Sara Zorzan"
+    ]
+
     if not Student.query.first():  # Only add students if not already in the database
-        for i, student_name in enumerate(students):
-            squad_id = squad1.id if i < len(students) // 2 else squad2.id
-            student = Student(name=student_name, squad_id=squad_id)
+        for student_name in students_squad1:
+            student = Student(name=student_name, squad_id=squad1.id)
+            db.session.add(student)
+
+        for student_name in students_squad2:
+            student = Student(name=student_name, squad_id=squad2.id)
             db.session.add(student)
 
         db.session.commit()
 
-# Home route to view students and squads
+# Home route to view students, squads, and game history
 @app.route('/')
 def dashboard():
     squads = Squad.query.all()
     students = Student.query.all()
-    return render_template('dashboard.html', squads=squads, students=students)
+    games = Game.query.order_by(Game.id.desc()).limit(10).all()  # Fetch last 10 games
+    return render_template('dashboard.html', squads=squads, students=students, games=games)
 
 @app.route('/add_game', methods=['GET', 'POST'])
 def add_game():
     if request.method == 'POST':
         date = request.form['date']
-        squad_id = request.form['squad']
-        points = int(request.form['points'])
-        not_played_students_count = 0
-        
-        # Count the number of players who didn't play
-        for student in Student.query.filter_by(squad_id=squad_id).all():
-            played = request.form.get(f'played_{student.id}') == 'yes'
-            if not played:
-                not_played_students_count += 1
-                student.total_points -= 7  # Apply penalty of -7 for players who didn't play
-            student.played = played  # Update played status
-        
+        gumiero_points = int(request.form['gumiero_points'])
+        salvo_points = int(request.form['salvo_points'])
+        gumiero_not_played = int(request.form['gumiero_not_played'])
+        salvo_not_played = int(request.form['salvo_not_played'])
+
+        # Validate the number of players who did not play
+        if not (0 <= gumiero_not_played <= 7):
+            return "Invalid input for Squadra Gumiero!", 400
+        if not (0 <= salvo_not_played <= 9):
+            return "Invalid input for Squadra Salvo!", 400
+
+        # Calculate total points with penalties
+        gumiero_total = gumiero_points - (gumiero_not_played * 7)
+        salvo_total = salvo_points - (salvo_not_played * 7)
+
         # Update squad points
-        squad = Squad.query.get(squad_id)
-        squad.total_points = points - (not_played_students_count * 7)
+        gumiero_squad = Squad.query.filter_by(name="Squadra Gumiero").first()
+        salvo_squad = Squad.query.filter_by(name="Squadra Salvo").first()
 
-        # Add the game to the Game table
-        new_game = Game(squad_id=squad_id, points=points, date=date)
-        db.session.add(new_game)
-        db.session.commit()
+        gumiero_squad.total_points += gumiero_total
+        salvo_squad.total_points += salvo_total
 
-        # Update the total points for the squad
-        squad.total_points = sum(student.total_points for student in Student.query.filter_by(squad_id=squad_id))
+        # Add the game to the database
+        new_game_gumiero = Game(date=date, squad_id=gumiero_squad.id, points=gumiero_points, played=True)
+        new_game_salvo = Game(date=date, squad_id=salvo_squad.id, points=salvo_points, played=True)
+
+        db.session.add(new_game_gumiero)
+        db.session.add(new_game_salvo)
         db.session.commit()
 
         return redirect(url_for('dashboard'))
